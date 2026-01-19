@@ -34,7 +34,7 @@ public class Main {
             System.out.print("Choose action: ");
             input = scanner.nextInt();
 
-            switch (input){
+            switch (input) {
                 case 1 -> System.out.println();
                 case 2 -> gymController.findActiveByClientId(1L);
                 case 3 -> System.out.println();
@@ -42,6 +42,7 @@ public class Main {
                 case 5 -> {
                     return;
                 }
+                default -> System.out.println("Unknown command");
             }
         }
     }

@@ -16,6 +16,7 @@ public class PostgresDBManager implements IDBManager {
             return DriverManager.getConnection(URL, USERNAME, PASSWORD);
         } catch (ClassNotFoundException | SQLException e) {
             throw new RuntimeException("Error with connection with DB", e);
+
         }
     }
 }

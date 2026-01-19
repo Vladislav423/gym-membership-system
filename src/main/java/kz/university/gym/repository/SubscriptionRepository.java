@@ -3,7 +3,12 @@ package kz.university.gym.repository;
 import kz.university.gym.entity.ClientSubscription;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface SubscriptionRepository {
-    ClientSubscription findActiveByClientId(Long clientId);
+    void save(ClientSubscription subscription);
+
+    Optional<ClientSubscription> findActiveByClientId(Long clientId);
+
+    void update(ClientSubscription subscription);
 }
