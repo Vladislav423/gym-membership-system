@@ -23,7 +23,7 @@ public class MembershipRepositoryImpl implements MembershipRepository {
                 }
             }
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
 
         return membershipTypes;
@@ -33,6 +33,7 @@ public class MembershipRepositoryImpl implements MembershipRepository {
     public Optional<MembershipType> findById(Long id) {
         String sql = "select * from membership_types where id = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setLong(1, id);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     return Optional.of(mapRow(rs));
@@ -40,7 +41,7 @@ public class MembershipRepositoryImpl implements MembershipRepository {
             }
 
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
 
         return Optional.empty();

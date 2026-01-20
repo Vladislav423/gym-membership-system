@@ -18,24 +18,21 @@ public class SubscriptionRepositoryImpl implements SubscriptionRepository {
                 (client_id, type_id, start_date, end_date, visit_left, is_active)
                 VALUES (?, ?, ?, ?, ?, ?)""";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            try (ResultSet rs = ps.executeQuery()) {
-                ps.setLong(1, subscription.getClientId());
-                ps.setLong(2, subscription.getTypeId());
-                ps.setDate(3, Date.valueOf(subscription.getStartDate()));
-                ps.setDate(4, Date.valueOf(subscription.getEndDate()));
-                ps.setInt(5, subscription.getVisitLeft());
-                ps.setBoolean(6, subscription.getIsActive());
-                ps.executeUpdate();
-            }
+            ps.setLong(1, subscription.getClientId());
+            ps.setLong(2, subscription.getTypeId());
+            ps.setDate(3, Date.valueOf(subscription.getStartDate()));
+            ps.setDate(4, Date.valueOf(subscription.getEndDate()));
+            ps.setInt(5, subscription.getVisitLeft());
+            ps.setBoolean(6, subscription.getIsActive());
+            ps.executeUpdate();
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
 
     }
 
     @Override
     public Optional<ClientSubscription> findActiveByClientId(Long clientId) {
-        // Ищем только тот, который is_active = true
         String sql = "SELECT * FROM client_subscriptions WHERE client_id = ? AND is_active = true";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setLong(1, clientId);
@@ -45,7 +42,7 @@ public class SubscriptionRepositoryImpl implements SubscriptionRepository {
                 }
             }
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
         return Optional.empty();
     }
@@ -59,7 +56,7 @@ public class SubscriptionRepositoryImpl implements SubscriptionRepository {
             ps.setLong(3, sub.getId());
             ps.executeUpdate();
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
     }
 

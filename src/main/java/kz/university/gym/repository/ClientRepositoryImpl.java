@@ -27,7 +27,7 @@ public class ClientRepositoryImpl implements ClientRepository {
                 }
             }
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
         return client;
     }
@@ -44,7 +44,7 @@ public class ClientRepositoryImpl implements ClientRepository {
                 }
             }
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
         return Optional.empty();
     }
@@ -60,7 +60,7 @@ public class ClientRepositoryImpl implements ClientRepository {
                 }
             }
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
 
         return clients;
@@ -75,7 +75,7 @@ public class ClientRepositoryImpl implements ClientRepository {
             ps.setString(3, client.getPhone());
             ps.executeUpdate();
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -85,7 +85,7 @@ public class ClientRepositoryImpl implements ClientRepository {
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Error with deleting client, client might has active subscriptions");
+            e.printStackTrace();
         }
     }
 

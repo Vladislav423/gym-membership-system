@@ -69,7 +69,7 @@ public class GymService {
         if (subscriptionOptional.isEmpty()){
             return "FORBIDDEN: None active subscription";
         }
-        ClientSubscription subscription = new ClientSubscription();
+        ClientSubscription subscription = subscriptionOptional.get();
         if (LocalDate.now().isAfter(subscription.getEndDate())){
             return "FORBIDDEN: The subscription experienced";
         }
