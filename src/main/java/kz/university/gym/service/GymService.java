@@ -23,11 +23,6 @@ public class GymService {
         client.setName(name);
         client.setPhone(phone);
         clientRepository.save(client);
-        System.out.println("Registration successful");
-    }
-
-    public List<Client> findAllClients() {
-        return clientRepository.findAll();
     }
 
     public List<MembershipType> findAllMembershipTypes() {

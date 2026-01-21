@@ -54,9 +54,10 @@ public class GymController {
     private void handleShowPlans() {
         List<MembershipType> membershipTypes = gymService.findAllMembershipTypes();
         for (MembershipType membershipType : membershipTypes) {
-            System.out.printf("[%d] %s - %.2f ₸ (Дней: %d, Посещений: %d)",
+            System.out.printf("[%d] %s - %.2f ₸ (Days: %d, Visits: %d)",
                     membershipType.getId(), membershipType.getName(), membershipType.getPrice(),
                     membershipType.getDurationDays(), membershipType.getVisitLimit());
+            System.out.println();
         }
     }
 
@@ -70,10 +71,12 @@ public class GymController {
             System.out.println("Input membership type id");
             Long typeId = Long.parseLong(scanner.nextLine());
 
-            gymService.buySubscription(clientId, typeId);
+            String result = gymService.buySubscription(clientId, typeId);
+            System.out.println(result);
         } catch (NumberFormatException e) {
             System.out.println("Enter only numbers for the ID");
         }
+
     }
 
     private void handleCheckIn() {
@@ -86,7 +89,7 @@ public class GymController {
             System.out.println(result);
 
         } catch (NumberFormatException e) {
-            System.out.println("The ID must be a number..");
+            System.out.println("The ID must be a number.");
         }
     }
 

@@ -7,7 +7,7 @@ import java.sql.SQLException;
 public class PostgresDBManager implements IDBManager {
     private static final String URL = "jdbc:postgresql://localhost:5432/gym-membership-system";
     private static final String USERNAME = "postgres";
-    private static final String PASSWORD = "Present423";
+    private static final String PASSWORD = "postgres";
 
     @Override
     public Connection getConnection() {
