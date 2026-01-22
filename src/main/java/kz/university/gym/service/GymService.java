@@ -82,6 +82,11 @@ public class GymService {
 
         return "WELCOME! Number of visits left: " + subscription.getVisitLeft();
     }
+
+    public List<Client> findAllClients(){
+        return clientRepository.findAll();
+    }
+
     private void closeSubscription(ClientSubscription subscription){
         subscription.setIsActive(false);
         subscriptionRepository.update(subscription);

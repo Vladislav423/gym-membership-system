@@ -50,6 +50,22 @@ public class ClientRepositoryImpl implements ClientRepository {
     }
 
     @Override
+    public Optional<Client> findByName(String name){
+        String sql = "select * from clients where name = ?";
+        try(PreparedStatement ps = connection.prepareStatement(sql)){
+            ps.setString(1,name);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return Optional.of(mapRow(rs));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return  Optional.empty();
+    }
+
+    @Override
     public List<Client> findAll() {
         List<Client> clients = new ArrayList<>();
         String sql = "select * from clients";

@@ -1,5 +1,6 @@
 package kz.university.gym.controller;
 
+import kz.university.gym.entity.Client;
 import kz.university.gym.entity.MembershipType;
 import kz.university.gym.service.GymService;
 import lombok.RequiredArgsConstructor;
@@ -63,12 +64,15 @@ public class GymController {
 
     private void handleBuySubscription() {
         try {
-            System.out.println("Input client's id");
+            System.out.println("Input client's id from the list:");
+            handleShowAllClients();
+
+            System.out.print("Input client's id: ");
             Long clientId = Long.parseLong(scanner.nextLine());
 
             handleShowPlans();
 
-            System.out.println("Input membership type id");
+            System.out.print("Input membership type id: ");
             Long typeId = Long.parseLong(scanner.nextLine());
 
             String result = gymService.buySubscription(clientId, typeId);
@@ -82,6 +86,8 @@ public class GymController {
     private void handleCheckIn() {
         try {
             System.out.println("--- ENTRANCE TO THE HALL ---");
+            handleShowAllClients();
+
             System.out.println("Input client's id");
             Long clientId = Long.parseLong(scanner.nextLine());
 
@@ -93,5 +99,16 @@ public class GymController {
         }
     }
 
+
+    private void handleShowAllClients() {
+        List<Client> clients = gymService.findAllClients();
+        if (clients.isEmpty()) {
+            System.out.println("List of clients is empty.");
+        } else {
+            for (Client client : clients) {
+                System.out.printf("[%d] %s (Phone: %s)\n", client.getId(), client.getName(), client.getPhone());
+            }
+        }
+    }
 
 }
