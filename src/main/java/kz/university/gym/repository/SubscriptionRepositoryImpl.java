@@ -1,10 +1,14 @@
 package kz.university.gym.repository;
 
 
+import kz.university.gym.dto.SubscriptionInfo;
 import kz.university.gym.entity.ClientSubscription;
 import lombok.RequiredArgsConstructor;
 
+import javax.swing.plaf.nimbus.State;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -70,6 +74,25 @@ public class SubscriptionRepositoryImpl implements SubscriptionRepository {
         sub.setVisitLeft(rs.getInt("visit_left"));
         sub.setIsActive(rs.getBoolean("is_active"));
         return sub;
+    }
+
+    public List<SubscriptionInfo> findAllWithDetails() {
+        List<SubscriptionInfo> list = new ArrayList<>();
+        String sql = "";
+        try(Statement statement = connection.createStatement(); ResultSet rs = statement.executeQuery(sql)){
+           SubscriptionInfo info = new SubscriptionInfo();
+           info.setId(rs.getLong("id"));
+            info.setClientName(rs.getString("name"));
+            info.setMembershipName(rs.getString("name"));
+            info.setEndDate(rs.getDate("end_date").toLocalDate());
+            info.setVisitsLeft(rs.getInt("visit_left"));
+
+            list.add(info);
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+
+        return list;
     }
 
 }
