@@ -1,7 +1,9 @@
 package kz.university.gym.controller;
 
+import kz.university.gym.dto.SubscriptionInfo;
 import kz.university.gym.entity.Client;
 import kz.university.gym.entity.MembershipType;
+import kz.university.gym.entity.User;
 import kz.university.gym.service.GymService;
 import lombok.RequiredArgsConstructor;
 
@@ -12,20 +14,22 @@ import java.util.Scanner;
 public class GymController {
     private final GymService gymService;
     private final Scanner scanner = new Scanner(System.in);
+    private final User currentUser;
 
     public void start() {
         System.out.println("WELCOME TO THE GYM SYSTEM");
 
         while (true) {
             System.out.println("""
-                    === FITNESS CLUB SYSTEM ===
-                    1. Add client
+                    \n=== MENU ===
+                    1. Add client (Admin only)
                     2. Show plans
-                    3. Sell subscription to user
-                    4. Check-in
-                    5. Exit""");
+                    3. Sell subscription
+                    4. Check-in (Enter gym)
+                    5. Show detailed report (JOIN) - Admin only
+                    0. Exit""");
 
-            System.out.print("Choose action: ");
+            System.out.print("> Choose action: ");
             String input = scanner.nextLine();
 
             switch (input) {
@@ -33,8 +37,9 @@ public class GymController {
                 case "2" -> handleShowPlans();
                 case "3" -> handleBuySubscription();
                 case "4" -> handleCheckIn();
-                case "5" -> {
-                    System.out.println("Exit...");
+                case "5" -> handleShowDetailedReport();
+                case "0" -> {
+                    System.out.println("Goodbye!");
                     return;
                 }
                 default -> System.out.println("Unknown command");
@@ -43,13 +48,50 @@ public class GymController {
     }
 
     private void handleRegisterClient() {
-        System.out.println("Input client's name");
+        if (!"ADMIN".equals(currentUser.getRole())) {
+            System.out.println("ACCESS DENIED: Only ADMIN can register new clients.");
+            return;
+        }
+
+        System.out.print("Input client's name: ");
         String name = scanner.nextLine();
 
-        System.out.println("Input client's phone");
+        System.out.print("Input client's phone (+7...): ");
         String phone = scanner.nextLine();
 
-        gymService.registerClient(name, phone);
+        try {
+            gymService.registerClient(name, phone);
+            System.out.println("Client registered successfully.");
+        } catch (IllegalArgumentException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+
+    private void handleShowDetailedReport() {
+        if (!"ADMIN".equals(currentUser.getRole())) {
+            System.out.println("ACCESS DENIED: Only ADMIN can see reports.");
+            return;
+        }
+
+        System.out.println("\n--- FULL SUBSCRIPTION REPORT (JOIN) ---");
+        List<SubscriptionInfo> details = gymService.getDetailedSubscriptions();
+
+        if (details.isEmpty()) {
+            System.out.println("No active subscriptions found.");
+            return;
+        }
+
+        System.out.printf("%-5s | %-20s | %-20s | %-12s | %s%n", "ID", "Client Name", "Plan", "End Date", "Visits");
+        System.out.println("--------------------------------------------------------------------------");
+
+        for (SubscriptionInfo info : details) {
+            System.out.printf("%-5d | %-20s | %-20s | %-12s | %d%n",
+                    info.getId(),
+                    info.getClientName(),
+                    info.getMembershipName(),
+                    info.getEndDate(),
+                    info.getVisitsLeft());
+        }
     }
 
     private void handleShowPlans() {
@@ -64,7 +106,7 @@ public class GymController {
 
     private void handleBuySubscription() {
         try {
-            System.out.println("Input client's id from the list:");
+            System.out.println("\n--- SELL SUBSCRIPTION ---");
             handleShowAllClients();
 
             System.out.print("Input client's id: ");
@@ -78,33 +120,32 @@ public class GymController {
             String result = gymService.buySubscription(clientId, typeId);
             System.out.println(result);
         } catch (NumberFormatException e) {
-            System.out.println("Enter only numbers for the ID");
+            System.out.println("Error: Enter only numbers.");
         }
-
     }
 
     private void handleCheckIn() {
         try {
-            System.out.println("--- ENTRANCE TO THE HALL ---");
+            System.out.println("--- CHECK-IN ---");
             handleShowAllClients();
 
-            System.out.println("Input client's id");
+            System.out.print("Input client's id: ");
             Long clientId = Long.parseLong(scanner.nextLine());
 
             String result = gymService.checkInClient(clientId);
             System.out.println(result);
 
         } catch (NumberFormatException e) {
-            System.out.println("The ID must be a number.");
+            System.out.println("Error: ID must be a number.");
         }
     }
-
 
     private void handleShowAllClients() {
         List<Client> clients = gymService.findAllClients();
         if (clients.isEmpty()) {
             System.out.println("List of clients is empty.");
         } else {
+            System.out.println("Clients list:");
             for (Client client : clients) {
                 System.out.printf("[%d] %s (Phone: %s)\n", client.getId(), client.getName(), client.getPhone());
             }
