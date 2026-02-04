@@ -13,6 +13,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public class GymService {
@@ -35,6 +36,12 @@ public class GymService {
         client.setName(name);
         client.setPhone(phone);
         clientRepository.save(client);
+    }
+
+    public List<Client> searchClientsByName(String partOfName) {
+        return clientRepository.findAll().stream()
+                .filter(client -> client.getName().toLowerCase().contains(partOfName.toLowerCase()))
+                .collect(Collectors.toList());
     }
 
     public List<SubscriptionInfo> getDetailedSubscriptions() {

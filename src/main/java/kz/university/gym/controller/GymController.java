@@ -27,6 +27,7 @@ public class GymController {
                     3. Sell subscription
                     4. Check-in (Enter gym)
                     5. Show detailed report (JOIN) - Admin only
+                    6. Find client by name
                     0. Exit""");
 
             System.out.print("> Choose action: ");
@@ -38,6 +39,7 @@ public class GymController {
                 case "3" -> handleBuySubscription();
                 case "4" -> handleCheckIn();
                 case "5" -> handleShowDetailedReport();
+                case "6" -> handleFindClient();
                 case "0" -> {
                     System.out.println("Goodbye!");
                     return;
@@ -149,6 +151,20 @@ public class GymController {
             for (Client client : clients) {
                 System.out.printf("[%d] %s (Phone: %s)\n", client.getId(), client.getName(), client.getPhone());
             }
+        }
+    }
+
+    private void handleFindClient() {
+        System.out.print("Enter name to search: ");
+        String query = scanner.nextLine();
+
+        List<Client> found = gymService.searchClientsByName(query);
+
+        if (found.isEmpty()) {
+            System.out.println("No clients found.");
+        } else {
+            System.out.println("--- SEARCH RESULTS ---");
+            found.forEach(c -> System.out.printf("[%d] %s (Phone: %s)\n", c.getId(), c.getName(), c.getPhone()));
         }
     }
 
